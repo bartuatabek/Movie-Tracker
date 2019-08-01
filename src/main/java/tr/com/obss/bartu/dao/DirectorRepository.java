@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface DirectorRepository extends JpaRepository<Director, Long> {
 
- Director findDirectorByNameAndLastNameAndBirthDateAndBirthPlace(String name, String lastName, Date birthDate,  String birthPlace);
- List<Director> findDirectorByNameAndLastName(String name, String lastName);
+ Director findDirectorByNameAndBirthDateAndBirthPlace(String name, Date birthDate,  String birthPlace);
+ List<Director> findDirectorByName(String name);
 }

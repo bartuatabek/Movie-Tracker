@@ -24,7 +24,7 @@ public class MovieController {
     @PostMapping("/admin/add")
     public ResponseEntity<?> addMovie(@RequestBody MovieRequest request) {
         if (movieService.addMovie(request))
-            return new ResponseEntity<>(request, HttpStatus.OK);
+            return new ResponseEntity<>(new Response("Movie added."), HttpStatus.OK);
         else
             return new ResponseEntity<>(new Response("Movie insertion failed."), HttpStatus.BAD_REQUEST);
     }

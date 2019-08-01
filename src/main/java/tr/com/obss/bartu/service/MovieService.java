@@ -22,8 +22,8 @@ public class MovieService {
     private MovieRepository repository;
 
     public boolean addMovie(MovieRequest request) {
-        if (StringUtils.isEmpty(request.getName()) || request.getDirector() == null || request.getRelease_date() == null ||
-                request.getImdb_rating() == null || request.getRuntime() == null || StringUtils.isEmpty(request.getGenre()))
+        if (StringUtils.isEmpty(request.getName()) || StringUtils.isEmpty(request.getPosterUrl()) || request.getDirector() == null || request.getRelease_date() == null ||
+                request.getImdb_rating() == null || request.getRuntime() == null || request.getGenre().isEmpty())
             return false;
 
         List<Movie> existingMovies = repository.findMoviesByName(request.getName());
@@ -32,7 +32,7 @@ public class MovieService {
             return false;
         } else {
             Movie newMovie = new Movie(request.getName(), request.getDirector(), request.getRelease_date(),
-                                       request.getImdb_rating(), request.getRuntime(), request.getGenre());
+                                       request.getImdb_rating(), request.getRuntime(), request.getGenre(), request.getPosterUrl());
             repository.save(newMovie);
             return true;
         }
@@ -40,7 +40,7 @@ public class MovieService {
 
     public ResponseEntity<?> updateMovie(Long id, MovieRequest request) {
         if (StringUtils.isEmpty(request.getName()) || request.getDirector() == null || request.getRelease_date() == null ||
-            request.getImdb_rating() == null || request.getRuntime() == null || StringUtils.isEmpty(request.getGenre())) {
+            request.getImdb_rating() == null || request.getRuntime() == null || request.getGenre().isEmpty()) {
             return new ResponseEntity<>(new Response("Missing fields updating move."), HttpStatus.BAD_REQUEST);
         }
 
@@ -54,7 +54,7 @@ public class MovieService {
             existingMovie.setRuntime(request.getRuntime());
             existingMovie.setGenre(request.getGenre());
             repository.save(existingMovie);
-            return new ResponseEntity<>(request, HttpStatus.OK);
+            return new ResponseEntity<>(new Response("Movie updated."), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new Response("Movie not found."), HttpStatus.NOT_FOUND);
         }

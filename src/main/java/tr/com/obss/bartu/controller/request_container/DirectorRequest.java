@@ -1,12 +1,15 @@
 package tr.com.obss.bartu.controller.request_container;
 
+import tr.com.obss.bartu.model.Movie;
+
 import java.util.Date;
+import java.util.Set;
 
 public class DirectorRequest {
 
-    private String name;
+    private Set<Movie> movies;
 
-    private String lastname;
+    private String name;
 
     private Date birthdate;
 
@@ -16,16 +19,16 @@ public class DirectorRequest {
         return name;
     }
 
-    public String getLastname() {
-        return lastname;
-    }
-
     public Date getBirthdate() {
         return birthdate;
     }
 
     public String getBirth_place() {
         return birth_place;
+    }
+
+    public Set<Movie> getMovies() {
+        return movies;
     }
 
 }

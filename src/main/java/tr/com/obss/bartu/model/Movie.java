@@ -1,11 +1,10 @@
 package tr.com.obss.bartu.model;
 
+import org.springframework.lang.NonNull;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "movies")
@@ -21,7 +20,7 @@ public class Movie {
     private String name;
 
     @NotNull
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "movie_director",
             joinColumns = { @JoinColumn(name = "fk_movie")},
             inverseJoinColumns = {@JoinColumn(name = "fk_director")})
@@ -37,7 +36,11 @@ public class Movie {
     private Integer runtime;
 
     @NotNull
-    private String genre;
+    @ElementCollection
+    private List<String> genre = new ArrayList<>();
+
+    @NotNull
+    private String posterUrl;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "movie", fetch = FetchType.LAZY)
     private Set<MovieList> movieLists = new HashSet<>();
@@ -108,11 +111,11 @@ public class Movie {
         this.runtime = runtime;
     }
 
-    public String getGenre() {
+    public List<String> getGenre() {
         return genre;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(List<String> genre) {
         this.genre = genre;
     }
 
@@ -124,16 +127,27 @@ public class Movie {
         this.movieLists = movieLists;
     }
 
-    public Movie(Long imdbID, @NotNull String name, @NotNull Date release_date, @NotNull Float imdbRating, @NotNull Integer runtime, @NotNull String genre) {
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
+
+
+    public Movie(Long imdbID, @NotNull String name, @NotNull Date release_date, @NotNull Float imdbRating, @NotNull Integer runtime, @NotNull List<String> genre, @NonNull String posterUrl) {
         this.imdbID = imdbID;
         this.name = name;
         this.release_date = release_date;
         this.imdbRating = imdbRating;
         this.runtime = runtime;
         this.genre = genre;
+        this.posterUrl = posterUrl;
+
     }
 
-    public Movie(@NotNull String name, @NotNull Date release_date, @NotNull Float imdbRating, @NotNull Integer runtime, @NotNull String genre) {
+    public Movie(@NotNull String name, @NotNull Date release_date, @NotNull Float imdbRating, @NotNull Integer runtime, @NotNull List<String> genre) {
         this.name = name;
         this.release_date = release_date;
         this.imdbRating = imdbRating;
@@ -141,13 +155,14 @@ public class Movie {
         this.genre = genre;
     }
 
-    public Movie(@NotNull String name, Director director, @NotNull Date release_date, @NotNull Float imdbRating, @NotNull Integer runtime, @NotNull String genre) {
+    public Movie(@NotNull String name, Director director, @NotNull Date release_date, @NotNull Float imdbRating, @NotNull Integer runtime, @NotNull List<String> genre, @NonNull String posterUrl) {
         this.name = name;
         addDirector(director);
         this.release_date = release_date;
         this.imdbRating = imdbRating;
         this.runtime = runtime;
         this.genre = genre;
+        this.posterUrl = posterUrl;
     }
 
     public Movie() {
@@ -166,11 +181,8 @@ public class Movie {
                 Objects.equals(getImdbRating(), movie.getImdbRating()) &&
                 Objects.equals(getRuntime(), movie.getRuntime()) &&
                 Objects.equals(getGenre(), movie.getGenre()) &&
-                Objects.equals(getMovieLists(), movie.getMovieLists());
+                Objects.equals(getMovieLists(), movie.getMovieLists()) &&
+                Objects.equals(getPosterUrl(), movie.getPosterUrl());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getImdbID(), getName(), getDirectors(), getRelease_date(), getImdbRating(), getRuntime(), getGenre(), getMovieLists());
-    }
 }

@@ -2,6 +2,8 @@ package tr.com.obss.bartu.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,6 +26,7 @@ import tr.com.obss.bartu.model.dto.UserDto;
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
@@ -154,7 +157,7 @@ public class UserService {
         User existingUser = repository.getOne(id);
         Movie existingMovie = movieRepository.getOne(request.getMovieId());
 
-        if (existingUser != null) {
+        if (existingUser == null) {
             return false;
         } else {
             MovieList list = new MovieList(request.getListname(), existingUser, existingMovie);
@@ -167,6 +170,7 @@ public class UserService {
         List<MovieDto> movies = null;
 
         if (id != null && !StringUtils.isEmpty(request.getListname())) {
+            movies = new ArrayList<>();
             List<MovieList> movieList = movieListRepository.findMovieListsByListNameAndUserId(request.getListname(), id);
 
             for (MovieList item: movieList) {
@@ -174,5 +178,34 @@ public class UserService {
             }
         }
         return movies;
+    }
+
+    public boolean deleteMovieFromList(Long userId, Long movieId, ListRequest request){
+        if (userId != null && movieId != null && !StringUtils.isEmpty(request.getListname())) {
+            List<MovieList> movieList = movieListRepository.findMovieListsByListNameAndUserId(request.getListname(), userId);
+            movieList = movieList.stream().filter(movie-> movie.getMovie().getId().equals(movieId)).collect(Collectors.toList());
+            if(!movieList.isEmpty()){
+                movieListRepository.delete(movieList.get(0));
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<UserDto> fetchUsers() {
+        List<UserDto> filteredList = new ArrayList<>();
+
+        for (User user: repository.findAll(sortByIdAsc())) {
+            filteredList.add(new UserDto(user));
+        }
+
+        if (filteredList.isEmpty())
+            return null;
+        else
+            return filteredList;
+    }
+
+    private Sort sortByIdAsc() {
+        return new Sort(Sort.Direction.ASC,"id");
     }
 }

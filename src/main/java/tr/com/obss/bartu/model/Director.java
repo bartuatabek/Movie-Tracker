@@ -12,21 +12,16 @@ import java.util.Set;
 public class Director {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @NotNull
     private String name;
 
-    @NotNull
-    private String lastName;
-
-    @NotNull
     private Date birthDate;
 
-    @NotNull
     private String birthPlace;
 
-    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "directors", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "directors", fetch = FetchType.LAZY)
     private Set<Movie> movies = new HashSet<>();
 
     public Long getId() {
@@ -43,14 +38,6 @@ public class Director {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public Date getBirthDate() {
@@ -77,17 +64,15 @@ public class Director {
         this.movies = movies;
     }
 
-    public Director(Long id, @NotNull String name, @NotNull String lastName, @NotNull Date birthDate, @NotNull String birthPlace) {
+    public Director(Long id, @NotNull String name, @NotNull Date birthDate, @NotNull String birthPlace) {
         this.id = id;
         this.name = name;
-        this.lastName = lastName;
         this.birthDate = birthDate;
         this.birthPlace = birthPlace;
     }
 
-    public Director(@NotNull String name, @NotNull String lastName, @NotNull Date birthDate, @NotNull String birthPlace) {
+    public Director(@NotNull String name, @NotNull Date birthDate, @NotNull String birthPlace) {
         this.name = name;
-        this.lastName = lastName;
         this.birthDate = birthDate;
         this.birthPlace = birthPlace;
     }
@@ -102,14 +87,9 @@ public class Director {
         Director director = (Director) o;
         return Objects.equals(getId(), director.getId()) &&
                 Objects.equals(getName(), director.getName()) &&
-                Objects.equals(getLastName(), director.getLastName()) &&
                 Objects.equals(getBirthDate(), director.getBirthDate()) &&
                 Objects.equals(getBirthPlace(), director.getBirthPlace()) &&
                 Objects.equals(getMovies(), director.getMovies());
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getLastName(), getBirthDate(), getBirthPlace(), getMovies());
-    }
 }

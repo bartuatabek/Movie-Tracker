@@ -4,6 +4,7 @@ import tr.com.obss.bartu.model.Director;
 
 import java.time.Duration;
 import java.util.Date;
+import java.util.List;
 
 public class MovieRequest {
 
@@ -15,9 +16,11 @@ public class MovieRequest {
 
     private Integer runtime;
 
-    private String genre;
+    private List<String> genre;
 
     private Float imdb_rating;
+
+    private String posterUrl;
 
     private Long imdb_id = null;
 
@@ -37,7 +40,11 @@ public class MovieRequest {
         return runtime;
     }
 
-    public String getGenre() {
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public List<String> getGenre() {
         return genre;
     }
 

@@ -90,4 +90,25 @@ public class UserController {
         else
             return new ResponseEntity<>(new Response("Could not found any movies in the list"), HttpStatus.NOT_FOUND);
     }
+
+
+    @Secured({"ROLE_ADMIN", "ROLE_USER"})
+    @DeleteMapping("/{userId}/{movieListId}/lists")
+    public ResponseEntity<?> deleteMovieFromList(@PathVariable Long userId,@PathVariable Long movieListId, @RequestBody ListRequest request) {
+        if (userService.deleteMovieFromList(userId, movieListId, request))
+            return new ResponseEntity<>(new Response("Movie in the list deleted."), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(new Response("Could not delete movie in the list"), HttpStatus.NOT_FOUND);
+    }
+
+    @Secured({"ROLE_ADMIN"})
+    @GetMapping()
+    public ResponseEntity<?> users() {
+        List<UserDto> userList = userService.fetchUsers();
+
+        if (userList != null)
+            return new ResponseEntity<>(userList, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(new Response("Could not found any users with query"), HttpStatus.BAD_REQUEST);
+    }
 }

@@ -47,8 +47,8 @@ public class DirectorController {
 
     @Secured({"ROLE_ADMIN"})
     @GetMapping("/admin/search")
-    public ResponseEntity<?> searchDirector(@RequestParam String name, @RequestParam String lastname) {
-        List<DirectorDto> directorList = directorService.search(name, lastname);
+    public ResponseEntity<?> searchDirector(@RequestParam String name) {
+        List<DirectorDto> directorList = directorService.search(name);
 
         if (directorList != null)
             return new ResponseEntity<>(directorList, HttpStatus.OK);

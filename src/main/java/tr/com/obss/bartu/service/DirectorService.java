@@ -15,6 +15,7 @@ import tr.com.obss.bartu.model.dto.MovieDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
 @Service
@@ -24,18 +25,18 @@ public class DirectorService {
     private DirectorRepository repository;
 
     public boolean addDirector(DirectorRequest request) {
-        if (StringUtils.isEmpty(request.getName()) || StringUtils.isEmpty(request.getLastname()) || request.getBirthdate() == null ||
+        if (StringUtils.isEmpty(request.getName()) || request.getBirthdate() == null ||
                 request.getBirth_place().isEmpty())
             return false;
 
-        Director existingDirector = repository.findDirectorByNameAndLastNameAndBirthDateAndBirthPlace(
-                request.getName(), request.getLastname(), request.getBirthdate(),
+        Director existingDirector = repository.findDirectorByNameAndBirthDateAndBirthPlace(
+                request.getName(), request.getBirthdate(),
                 request.getBirth_place());
 
         if (existingDirector != null) {
             return false;
         } else {
-            Director newDirector = new Director(request.getName(), request.getLastname(), request.getBirthdate(),
+            Director newDirector = new Director(request.getName(), request.getBirthdate(),
                     request.getBirth_place());
             repository.save(newDirector);
             return true;
@@ -43,21 +44,19 @@ public class DirectorService {
     }
 
     public ResponseEntity<?> updateDirector(Long id, DirectorRequest request) {
-        if (StringUtils.isEmpty(request.getName()) || StringUtils.isEmpty(request.getLastname()) || request.getBirthdate() == null ||
+        if (StringUtils.isEmpty(request.getName()) || request.getBirthdate() == null ||
                 StringUtils.isEmpty(request.getBirth_place())) {
             return new ResponseEntity<>(new Response("Missing fields updating director."), HttpStatus.BAD_REQUEST);
         }
 
-        Director existingDirector = repository.findDirectorByNameAndLastNameAndBirthDateAndBirthPlace(
-                request.getName(), request.getLastname(), request.getBirthdate(),
-                request.getBirth_place());
+        Optional<Director> existingDirector = repository.findById(id);
 
-        if (existingDirector != null) {
-            existingDirector.setName(request.getName());
-            existingDirector.setLastName(request.getLastname());
-            existingDirector.setBirthDate(request.getBirthdate());
-            existingDirector.setBirthPlace(request.getBirth_place());
-            repository.save(existingDirector);
+        if (existingDirector.isPresent()) {
+            existingDirector.get().setName(request.getName());
+            existingDirector.get().setBirthDate(request.getBirthdate());
+            existingDirector.get().setBirthPlace(request.getBirth_place());
+            existingDirector.get().setMovies(request.getMovies());
+            repository.save(existingDirector.get());
             return new ResponseEntity<>(request, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(new Response("Director not found."), HttpStatus.NOT_FOUND);
@@ -73,13 +72,13 @@ public class DirectorService {
             return false;
     }
 
-    public List<DirectorDto> search(String name, String lastName) {
-        if (StringUtils.isEmpty(name) && StringUtils.isEmpty(lastName))
+    public List<DirectorDto> search(String name) {
+        if (StringUtils.isEmpty(name))
             return null;
 
         List<DirectorDto> filteredList = new ArrayList<>();
 
-        for (Director director:repository.findDirectorByNameAndLastName(name, lastName)) {
+        for (Director director:repository.findDirectorByName(name)) {
             filteredList.add(new DirectorDto(director));
         }
 
@@ -92,7 +91,6 @@ public class DirectorService {
     public DirectorDto directorDetail(Long id) {
         Director existingDirector =  repository.getOne(id);
         if (existingDirector != null) {
-            repository.delete(existingDirector);
             return new DirectorDto(existingDirector);
         } else
             return null;

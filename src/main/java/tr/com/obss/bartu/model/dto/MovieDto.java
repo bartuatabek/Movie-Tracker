@@ -4,9 +4,7 @@ import tr.com.obss.bartu.model.Director;
 import tr.com.obss.bartu.model.Movie;
 
 import java.time.Duration;
-import java.util.Date;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class MovieDto {
 
@@ -16,7 +14,7 @@ public class MovieDto {
 
     private String name;
 
-    private Set<DirectorDto> directors;
+    private Set<DirectorDto> directors = new HashSet<>();
 
     private Date release_date;
 
@@ -24,7 +22,9 @@ public class MovieDto {
 
     private Integer runtime;
 
-    private String genre;
+    private List<String> genre;
+
+    private String posterUrl;
 
     public Long getId() {
         return id;
@@ -82,13 +82,15 @@ public class MovieDto {
         this.runtime = runtime;
     }
 
-    public String getGenre() {
+    public List<String> getGenre() {
         return genre;
     }
 
-    public void setGenre(String genre) {
+    public void setGenre(List<String> genre) {
         this.genre = genre;
     }
+
+    public MovieDto() {}
 
     public MovieDto(Movie movie) {
         this.id = movie.getId();
@@ -103,9 +105,10 @@ public class MovieDto {
         this.imdbRating = movie.getImdbRating();
         this.runtime = movie.getRuntime();
         this.genre = movie.getGenre();
+        this.posterUrl = movie.getPosterUrl();
     }
 
-    public MovieDto(Long imdbID, String name, Set<DirectorDto> directors, Date release_date, Float imdbRating, Integer runtime, String genre) {
+    public MovieDto(Long imdbID, String name, Set<DirectorDto> directors, Date release_date, Float imdbRating, Integer runtime, List<String> genre, String posterUrl) {
         this.imdbID = imdbID;
         this.name = name;
         this.directors = directors;
@@ -113,6 +116,14 @@ public class MovieDto {
         this.imdbRating = imdbRating;
         this.runtime = runtime;
         this.genre = genre;
+        this.posterUrl = posterUrl;
+    }
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
 
     @Override
@@ -127,11 +138,12 @@ public class MovieDto {
                 Objects.equals(getRelease_date(), movieDto.getRelease_date()) &&
                 Objects.equals(getImdbRating(), movieDto.getImdbRating()) &&
                 Objects.equals(getRuntime(), movieDto.getRuntime()) &&
+                Objects.equals(getPosterUrl(), movieDto.getPosterUrl()) &&
                 Objects.equals(getGenre(), movieDto.getGenre());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getImdbID(), getName(), getDirectors(), getRelease_date(), getImdbRating(), getRuntime(), getGenre());
+        return Objects.hash(getId(), getImdbID(), getName(), getDirectors(), getRelease_date(), getImdbRating(), getRuntime(), getGenre(),getPosterUrl());
     }
 }

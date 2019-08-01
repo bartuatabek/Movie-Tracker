@@ -4,6 +4,7 @@ import tr.com.obss.bartu.model.Director;
 
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 public class DirectorDto {
 
@@ -11,11 +12,11 @@ public class DirectorDto {
 
     private String name;
 
-    private String lastName;
-
     private Date birthDate;
 
     private String birthPlace;
+
+    private Set<MovieDto> movies;
 
     public Long getId() {
         return id;
@@ -31,14 +32,6 @@ public class DirectorDto {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public Date getBirthDate() {
@@ -57,10 +50,15 @@ public class DirectorDto {
         this.birthPlace = birthPlace;
     }
 
+    public Set<MovieDto> getMovies() { return movies; }
+
+    public void setMovies(Set<MovieDto> movies) { this.movies = movies; }
+
+    public DirectorDto() { }
+
     public DirectorDto(Director director) {
         this.id = director.getId();
         this.name = director.getName();
-        this.lastName = director.getLastName();
         this.birthDate = director.getBirthDate();
         this.birthPlace = director.getBirthPlace();
     }
@@ -72,13 +70,12 @@ public class DirectorDto {
         DirectorDto that = (DirectorDto) o;
         return Objects.equals(getId(), that.getId()) &&
                 Objects.equals(getName(), that.getName()) &&
-                Objects.equals(getLastName(), that.getLastName()) &&
                 Objects.equals(getBirthDate(), that.getBirthDate()) &&
                 Objects.equals(getBirthPlace(), that.getBirthPlace());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName(), getLastName(), getBirthDate(), getBirthPlace());
+        return Objects.hash(getId(), getName(), getBirthDate(), getBirthPlace());
     }
 }
