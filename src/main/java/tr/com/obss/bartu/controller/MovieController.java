@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import tr.com.obss.bartu.controller.response.Response;
 import tr.com.obss.bartu.controller.request_container.MovieRequest;
 import tr.com.obss.bartu.model.dto.MovieDto;
+import tr.com.obss.bartu.model.dto.UserDto;
 import tr.com.obss.bartu.service.MovieService;
 
 import java.util.List;
@@ -66,5 +67,16 @@ public class MovieController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         else
             return new ResponseEntity<>(new Response("Could not found movie with id: " + id), HttpStatus.BAD_REQUEST);
+    }
+
+    @Secured({"ROLE_ADMIN"})
+    @GetMapping()
+    public ResponseEntity<?> movies() {
+        List<MovieDto> movieList = movieService.fetchMovies();
+
+        if (movieList != null)
+            return new ResponseEntity<>(movieList, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(new Response("Could not found any users with query"), HttpStatus.BAD_REQUEST);
     }
 }

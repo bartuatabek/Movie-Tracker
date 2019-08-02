@@ -2,6 +2,7 @@ package tr.com.obss.bartu.service;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -106,5 +107,22 @@ public class DirectorService {
         if (directorMovies.isEmpty())
             return null;
         return directorMovies;
+    }
+
+    public List<DirectorDto> fetchDirectors() {
+        List<DirectorDto> filteredList = new ArrayList<>();
+
+        for (Director director: repository.findAll(sortByIdAsc())) {
+            filteredList.add(new DirectorDto(director));
+        }
+
+        if (filteredList.isEmpty())
+            return null;
+        else
+            return filteredList;
+    }
+
+    private Sort sortByIdAsc() {
+        return new Sort(Sort.Direction.ASC,"id");
     }
 }

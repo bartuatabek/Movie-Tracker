@@ -9,6 +9,7 @@ import tr.com.obss.bartu.controller.response.Response;
 import tr.com.obss.bartu.controller.request_container.DirectorRequest;
 import tr.com.obss.bartu.model.dto.DirectorDto;
 import tr.com.obss.bartu.model.dto.MovieDto;
+import tr.com.obss.bartu.model.dto.UserDto;
 import tr.com.obss.bartu.service.DirectorService;
 
 import java.util.List;
@@ -76,6 +77,17 @@ public class DirectorController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         else
             return new ResponseEntity<>(new Response("Could not found director movies with id: " + id), HttpStatus.BAD_REQUEST);
+    }
+
+    @Secured({"ROLE_ADMIN"})
+    @GetMapping()
+    public ResponseEntity<?> directors() {
+        List<DirectorDto> directorList = directorService.fetchDirectors();
+
+        if (directorList != null)
+            return new ResponseEntity<>(directorList, HttpStatus.OK);
+        else
+            return new ResponseEntity<>(new Response("Could not found any directors with query"), HttpStatus.BAD_REQUEST);
     }
 }
 
